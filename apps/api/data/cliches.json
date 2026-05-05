@@ -1,0 +1,184 @@
+{
+  "cliches": [
+    {
+      "id": "c001",
+      "phrase": "in today's landscape",
+      "category": "business",
+      "severity": 9,
+      "matchType": "exact",
+      "alternatives": ["currently", "these days", "right now"],
+      "explanation": "Overused in AI-generated business writing. Vague and corporate."
+    },
+    {
+      "id": "c002",
+      "phrase": "cutting-edge",
+      "category": "tech",
+      "severity": 8,
+      "matchType": "word",
+      "alternatives": ["latest", "new", "state-of-the-art"],
+      "explanation": "Lazy adjective favored by AI. Show, don't tell."
+    },
+    {
+      "id": "c003",
+      "phrase": "it's crucial to",
+      "category": "business",
+      "severity": 7,
+      "matchType": "phrase",
+      "alternatives": ["[verb] directly", "[verb] without delay", "you must [verb]"],
+      "explanation": "Filler phrase that adds no value. Be more specific."
+    },
+    {
+      "id": "c004",
+      "phrase": "unlocking the potential",
+      "category": "business",
+      "severity": 9,
+      "matchType": "phrase",
+      "alternatives": ["realizing value", "making progress", "achieving goals"],
+      "explanation": "Peak corporate cliché. Meaningless."
+    },
+    {
+      "id": "c005",
+      "phrase": "a game-changer",
+      "category": "tech",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["transformative", "disruptive", "significant"],
+      "explanation": "Overused to death. Show impact concretely."
+    },
+    {
+      "id": "c006",
+      "phrase": "delve into",
+      "category": "academic",
+      "severity": 9,
+      "matchType": "phrase",
+      "alternatives": ["explore", "examine", "look at"],
+      "explanation": "Extremely common in ChatGPT-generated essays and blog posts."
+    },
+    {
+      "id": "c007",
+      "phrase": "tapestry",
+      "category": "academic",
+      "severity": 10,
+      "matchType": "word",
+      "alternatives": ["complexity", "network", "system"],
+      "explanation": "AI loves describing things as a 'rich tapestry'. Humans rarely do."
+    },
+    {
+      "id": "c008",
+      "phrase": "not only... but also",
+      "category": "academic",
+      "severity": 5,
+      "matchType": "phrase",
+      "alternatives": ["and", "as well as"],
+      "explanation": "Overused structure in AI writing for pseudo-sophistication."
+    },
+    {
+      "id": "c009",
+      "phrase": "in conclusion",
+      "category": "academic",
+      "severity": 6,
+      "matchType": "phrase",
+      "alternatives": ["finally", "lastly", "to sum up"],
+      "explanation": "Stilted and predictable closing marker."
+    },
+    {
+      "id": "c010",
+      "phrase": "testament to",
+      "category": "marketing",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["proof of", "shows", "demonstrates"],
+      "explanation": "Grandiose language often used by AI."
+    },
+    {
+      "id": "c011",
+      "phrase": "leverage",
+      "category": "business",
+      "severity": 7,
+      "matchType": "word",
+      "alternatives": ["use", "apply", "utilize"],
+      "explanation": "Corporate buzzword that often means nothing more than 'use'."
+    },
+    {
+      "id": "c012",
+      "phrase": "synergy",
+      "category": "business",
+      "severity": 9,
+      "matchType": "word",
+      "alternatives": ["collaboration", "cooperation", "teamwork"],
+      "explanation": "Classic meaningless corporate speak."
+    },
+    {
+      "id": "c013",
+      "phrase": "transformative journey",
+      "category": "marketing",
+      "severity": 9,
+      "matchType": "phrase",
+      "alternatives": ["process", "change", "experience"],
+      "explanation": "Overly dramatic AI-favored phrase."
+    },
+    {
+      "id": "c014",
+      "phrase": "beacon of",
+      "category": "other",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["example of", "leader in", "symbol of"],
+      "explanation": "Flowery metaphor common in AI storytelling."
+    },
+    {
+      "id": "c015",
+      "phrase": "reimagine",
+      "category": "tech",
+      "severity": 8,
+      "matchType": "word",
+      "alternatives": ["rethink", "change", "update"],
+      "explanation": "Overused tech marketing term."
+    },
+    {
+      "id": "c016",
+      "phrase": "paradigm shift",
+      "category": "tech",
+      "severity": 9,
+      "matchType": "phrase",
+      "alternatives": ["big change", "fundamental change"],
+      "explanation": "Pretentious jargon."
+    },
+    {
+      "id": "c017",
+      "phrase": "holistic approach",
+      "category": "business",
+      "severity": 7,
+      "matchType": "phrase",
+      "alternatives": ["comprehensive", "total", "complete"],
+      "explanation": "Filler buzzword."
+    },
+    {
+      "id": "c018",
+      "phrase": "seamlessly integrate",
+      "category": "tech",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["work with", "connect", "link"],
+      "explanation": "AI loves 'seamlessly'."
+    },
+    {
+      "id": "c019",
+      "phrase": "vibrant ecosystem",
+      "category": "tech",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["community", "network", "group"],
+      "explanation": "Overused startup fluff."
+    },
+    {
+      "id": "c020",
+      "phrase": "robust solution",
+      "category": "tech",
+      "severity": 7,
+      "matchType": "phrase",
+      "alternatives": ["reliable tool", "strong system"],
+      "explanation": "AI favors 'robust'."
+    }
+  ]
+}

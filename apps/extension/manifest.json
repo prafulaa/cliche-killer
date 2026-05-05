@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Cliché Killer",
+  "version": "0.1.0",
+  "description": "Remove AI-generated phrases from your writing.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["http://localhost:3001/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
