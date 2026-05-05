@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
 
+@import "tailwindcss";
+
 @theme {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -21,10 +23,6 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   --background: 240 10% 3.9%;
@@ -53,7 +51,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
