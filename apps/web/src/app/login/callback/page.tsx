@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
-export default function LoginCallback() {
+function LoginCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -26,5 +26,20 @@ export default function LoginCallback() {
         <p className="text-white/40">Setting up your secure session.</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginCallback() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white">Loading...</h2>
+        </div>
+      </div>
+    }>
+      <LoginCallbackContent />
+    </Suspense>
   );
 }
