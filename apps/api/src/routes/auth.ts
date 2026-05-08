@@ -13,10 +13,13 @@ const router = Router();
 import { getJwtSecret } from '../middleware/auth.js';
 const JWT_SECRET = getJwtSecret();
 
+// Basic email regex validation
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 router.post('/request-magic-link', async (req, res) => {
   const { email } = req.body;
 
-  if (!email || !email.includes('@')) {
+  if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
     return res.status(400).json({ error: 'Valid email is required' });
   }
 

@@ -143,16 +143,6 @@ export function TextEditor({ text, setText, cliches, onAnalyze, loading, onFix }
     editor?.commands.clearContent();
   };
 
-  // Function to apply highlights based on clichés
-  // In a real TipTap setup, this would be a custom Extension/Plugin.
-  // For now, we'll use a simplified version that wraps phrases in the editor.
-  useEffect(() => {
-    if (!editor || !cliches.length) return;
-
-    // This is a simplified approach for the MVP. 
-    // Ideally, we'd use ProseMirror Decorations to avoid modifying the document content.
-  }, [cliches, editor]);
-
   return (
     <div className="flex flex-col h-full glass-card overflow-hidden">
       <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">

@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Index for faster email lookups during authentication
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
 -- analyses: each time user checks a draft
 CREATE TABLE IF NOT EXISTS analyses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

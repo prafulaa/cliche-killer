@@ -18,11 +18,22 @@ const logger = pino();
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  credentials: true,
+}));
 app.use(helmet());
 
 // Request timeout middleware - 30 second timeout for all requests
 app.use(timeout({ timeout: 30000, disableTimeout: false }));
+
+// Timeout error handler - must be before routes
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err.timeout) {
+    return res.status(503).json({ error: 'Request timeout' });
+  }
+  next(err);
+});
 
 // Webhooks must be before express.json() to handle raw body
 app.use('/api/webhooks', webhooksRouter);
