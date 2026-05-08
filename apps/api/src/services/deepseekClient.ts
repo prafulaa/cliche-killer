@@ -30,8 +30,12 @@ Return ONLY a JSON array:
 Focus on: corporate jargon, meaningless buzzwords, overused metaphors, corporate speak.`;
 
     const response = await deepseek.chat.completions.create({
-      messages: [{ role: "system", content: prompt }],
-      model: "deepseek-chat",
+      model: "deepseek-chat", // DeepSeek language model
+      messages: [
+        { role: "system", content: "You are a writing editor specializing in detecting AI-generated phrases. Return ONLY a JSON array." },
+        { role: "user", content: prompt }
+      ],
+      response_format: { type: 'json_object' } // Force JSON mode
     });
 
     const content = response.choices[0].message.content;

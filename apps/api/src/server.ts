@@ -45,9 +45,11 @@ app.use('/api/auth', authRouter);
 app.use('/api/billing', billingRouter);
 app.use('/api/analyze', authenticate, rateLimit, analyzeRouter);
 
-app.listen(port, () => {
-  logger.info(`Server running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    logger.info(`Server running on port ${port}`);
+  });
+}
 
 // Timeout error handler
 app.use((err: any, req: any, res: any, next: any) => {
@@ -56,3 +58,5 @@ app.use((err: any, req: any, res: any, next: any) => {
   }
   next(err);
 });
+
+export default app;
