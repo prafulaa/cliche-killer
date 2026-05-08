@@ -18,8 +18,16 @@ const logger = pino();
 const app = express();
 const port = process.env.PORT || 3001;
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+if (process.env.APP_URL && !allowedOrigins.includes(process.env.APP_URL)) {
+  allowedOrigins.push(process.env.APP_URL);
+}
+if (allowedOrigins.length === 0) {
+  allowedOrigins.push('http://localhost:3000');
+}
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(helmet());
