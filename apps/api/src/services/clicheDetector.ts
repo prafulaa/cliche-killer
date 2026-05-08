@@ -8,9 +8,20 @@ const __dirname = path.dirname(__filename);
 
 const CLICHES_PATH = path.join(__dirname, '../../data/cliches.json');
 
+// Cache cliches at module level to avoid repeated file I/O
+let clichesCache: { cliches: Cliche[] } | null = null;
+
 export function loadClichesFromJson(): { cliches: Cliche[] } {
-  const data = fs.readFileSync(CLICHES_PATH, 'utf-8');
-  return JSON.parse(data);
+  if (!clichesCache) {
+    const data = fs.readFileSync(CLICHES_PATH, 'utf-8');
+    clichesCache = JSON.parse(data);
+  }
+  return clichesCache;
+}
+
+// Force reload for testing
+export function clearClichesCache() {
+  clichesCache = null;
 }
 
 export function detectClichesFast(text: string): Cliche[] {

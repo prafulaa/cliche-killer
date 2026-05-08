@@ -9,7 +9,9 @@ dotenv.config();
 const logger = pino();
 const router = Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
+// Import JWT_SECRET from shared auth middleware to ensure consistency
+import { getJwtSecret } from '../middleware/auth.js';
+const JWT_SECRET = getJwtSecret();
 
 router.post('/request-magic-link', async (req, res) => {
   const { email } = req.body;

@@ -4,15 +4,23 @@ import dotenv from 'dotenv';
 import { supabase } from '../db/client.js';
 
 dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_only_secret_do_not_use_in_production';
 
-if (!process.env.JWT_SECRET) {
-  console.warn('WARNING: Using fallback JWT secret for development. Set JWT_SECRET env var in production.');
+// Centralized JWT secret getter - ensures consistent secret across all modules
+function getJwtSecret(): string {
+  if (!process.env.JWT_SECRET) {
+    const env = process.env.NODE_ENV || 'development';
+    if (env === 'production') {
+      throw new Error('JWT_SECRET environment variable must be set in production');
+    }
+    console.warn('WARNING: Using fallback JWT secret for development. Set JWT_SECRET env var in production.');
+    return 'dev_only_secret_do_not_use_in_production';
+  }
+  return process.env.JWT_SECRET;
 }
 
-if (!process.env.JWT_SECRET) {
-  console.warn('WARNING: Using fallback JWT secret for development. Set JWT_SECRET env var in production.');
-}
+const JWT_SECRET = getJwtSecret();
+
+export { getJwtSecret };
 
 export interface AuthenticatedRequest extends Request {
   user?: {
