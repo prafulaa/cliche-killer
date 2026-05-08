@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { detectClichesFast, calculateHealthScore, mergeResults } from '../services/clicheDetector.js';
-import { detectClichesNuanced } from '../services/anthropicClient.js';
+import { detectClichesNuanced } from '../services/deepseekClient.js';
 import { AuthenticatedRequest } from '../middleware/auth.js';
 import { supabase } from '../db/client.js';
 import pino from 'pino';

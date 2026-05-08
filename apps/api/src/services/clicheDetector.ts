@@ -16,7 +16,7 @@ export function loadClichesFromJson(): { cliches: Cliche[] } {
     const data = fs.readFileSync(CLICHES_PATH, 'utf-8');
     clichesCache = JSON.parse(data);
   }
-  return clichesCache;
+  return clichesCache!;
 }
 
 // Force reload for testing

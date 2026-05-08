@@ -10,7 +10,7 @@ import { supabase } from '../db/client.js';
 
 // Stripe requires the raw body for signature verification
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
+  const sig = req.headers['stripe-signature'] as string;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   let event;

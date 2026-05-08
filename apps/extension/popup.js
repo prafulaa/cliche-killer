@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   saveKeyBtn.onclick = async () => {
     const key = apiKeyInput.value.trim();
     await chrome.storage.local.set({ apiKey: key });
-    statusDiv.innerText = 'API Key saved!';
+    statusDiv.innerText = 'API Key saved successfully!';
     setTimeout(() => {
       statusDiv.innerText = '';
       backBtn.click();
-    }, 1000);
+    }, 1500);
   };
 
   // Scanning Logic
@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      
+      if (!tab) throw new Error('No active tab found');
+
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.error) {
           statusDiv.innerText = 'Error: ' + response.error;
         } else {
-          renderResults(response);
+          renderResults(response, tab.id);
         }
       });
     } catch (err) {
@@ -102,23 +103,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function renderResults(data) {
+  function renderResults(data, tabId) {
     resultsDiv.classList.remove('hidden');
     healthScore.innerText = data.healthScore;
     
     // Set score color
-    healthScore.className = 'score';
+    healthScore.className = 'score-value';
     if (data.healthScore > 75) healthScore.classList.add('good');
     else if (data.healthScore > 40) healthScore.classList.add('mid');
     else healthScore.classList.add('bad');
 
     statsDiv.innerText = `${data.clichesFound} clichés detected`;
 
-    clicheList.innerHTML = data.clicheList.map(c => `
-      <li class="cliche-item">
-        <div class="cliche-phrase">"${c.phrase}"</div>
-        <div class="cliche-suggestion">Try: ${c.alternatives.slice(0, 2).join(', ')}</div>
-      </li>
-    `).join('');
+    clicheList.innerHTML = '';
+    data.clicheList.forEach(c => {
+      const li = document.createElement('li');
+      li.className = 'cliche-item';
+      
+      const altsHtml = c.alternatives.slice(0, 3).map(alt => 
+        `<span class="alt-tag" data-phrase="${c.phrase}" data-replacement="${alt}">${alt}</span>`
+      ).join('');
+
+      li.innerHTML = `
+        <div class="cliche-header">
+          <div class="cliche-phrase">"${c.phrase}"</div>
+          <div class="cliche-meta">Severity: ${c.severity}</div>
+        </div>
+        <div class="cliche-suggestion">
+          ${altsHtml}
+        </div>
+      `;
+
+      // Add click handlers for each alternative
+      li.querySelectorAll('.alt-tag').forEach(tag => {
+        tag.onclick = async () => {
+          const phrase = tag.dataset.phrase;
+          const replacement = tag.dataset.replacement;
+          
+          try {
+            await chrome.tabs.sendMessage(tabId, {
+              type: 'REPLACE_TEXT',
+              phrase,
+              replacement
+            });
+            tag.innerText = 'Fixed! ✓';
+            tag.classList.add('fixed');
+            setTimeout(() => {
+              tag.style.display = 'none';
+            }, 1000);
+          } catch (err) {
+            console.error('Failed to replace text:', err);
+            statusDiv.innerText = 'Could not fix in page automatically.';
+          }
+        };
+      });
+
+      clicheList.appendChild(li);
+    });
   }
 });
