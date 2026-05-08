@@ -3,6 +3,14 @@ dist
 .next
 .env
 .env.local
+.env.example
 .DS_Store
 *.log
-node_modules
+
+# Codebuff agents
+.agents/
+
+# Local API DB files (for development)
+apps/api/src/db/
+apps/api/data/*.json
+!apps/api/data/cliches.json

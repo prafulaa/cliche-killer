@@ -1,67 +1,124 @@
 // Cliché Killer Popup Script
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const scanBtn = document.getElementById('scan');
-  const statusDiv = document.createElement('div');
-  statusDiv.id = 'status';
-  document.body.appendChild(statusDiv);
+  const scanText = document.getElementById('scan-text');
+  const loader = document.getElementById('loader');
+  const statusDiv = document.getElementById('status');
+  const resultsDiv = document.getElementById('results');
+  const clicheList = document.getElementById('cliche-list');
+  const healthScore = document.getElementById('health-score');
+  const statsDiv = document.getElementById('stats');
 
+  const mainView = document.getElementById('main-view');
+  const settingsView = document.getElementById('settings-view');
+  const settingsBtn = document.getElementById('settings-btn');
+  const backBtn = document.getElementById('back-btn');
+  const apiKeyInput = document.getElementById('api-key-input');
+  const saveKeyBtn = document.getElementById('save-key');
+
+  // Load existing API Key
+  const { apiKey } = await chrome.storage.local.get('apiKey');
+  if (apiKey) {
+    apiKeyInput.value = apiKey;
+  }
+
+  // View Switching
+  settingsBtn.onclick = () => {
+    mainView.classList.add('hidden');
+    settingsView.classList.remove('hidden');
+  };
+
+  backBtn.onclick = () => {
+    settingsView.classList.add('hidden');
+    mainView.classList.remove('hidden');
+  };
+
+  // API Key Saving
+  saveKeyBtn.onclick = async () => {
+    const key = apiKeyInput.value.trim();
+    await chrome.storage.local.set({ apiKey: key });
+    statusDiv.innerText = 'API Key saved!';
+    setTimeout(() => {
+      statusDiv.innerText = '';
+      backBtn.click();
+    }, 1000);
+  };
+
+  // Scanning Logic
   scanBtn.onclick = async () => {
-    statusDiv.innerText = 'Scanning...';
+    setLoading(true);
+    statusDiv.innerText = '';
+    resultsDiv.classList.add('hidden');
     
-    // Get text from active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        const selection = window.getSelection().toString();
-        if (selection) return selection;
-        
-        // Fallback to searching all textareas
-        const editors = document.querySelectorAll('textarea, [contenteditable="true"]');
-        if (editors.length > 0) return editors[0].value || editors[0].innerText;
-        
-        return document.body.innerText;
-      }
-    }, async (results) => {
-      const text = results[0].result;
-      if (!text) {
-        statusDiv.innerText = 'No text found to scan.';
-        return;
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          const selection = window.getSelection().toString();
+          if (selection) return selection;
+          
+          const activeEl = document.activeElement;
+          if (activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
+            return activeEl.value || activeEl.innerText;
+          }
+
+          const editors = document.querySelectorAll('textarea, [contenteditable="true"]');
+          if (editors.length > 0) return editors[0].value || editors[0].innerText;
+          
+          return document.body.innerText.substring(0, 5000);
+        }
+      });
+
+      const text = results[0]?.result;
+      if (!text || text.length < 5) {
+        throw new Error('No substantial text found to scan.');
       }
 
       chrome.runtime.sendMessage({ type: 'ANALYZE_TEXT', text }, (response) => {
+        setLoading(false);
         if (response.error) {
           statusDiv.innerText = 'Error: ' + response.error;
         } else {
           renderResults(response);
         }
       });
-    });
+    } catch (err) {
+      setLoading(false);
+      statusDiv.innerText = err.message;
+    }
   };
 
+  function setLoading(isLoading) {
+    scanBtn.disabled = isLoading;
+    if (isLoading) {
+      scanText.classList.add('hidden');
+      loader.classList.remove('hidden');
+    } else {
+      scanText.classList.remove('hidden');
+      loader.classList.add('hidden');
+    }
+  }
+
   function renderResults(data) {
-    statusDiv.innerHTML = `
-      <div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong>Health Score:</strong>
-          <span style="color: ${data.healthScore > 70 ? 'green' : 'red'}; font-size: 1.2rem; font-weight: bold;">
-            ${data.healthScore}
-          </span>
-        </div>
-        <p style="font-size: 0.8rem; color: #666;">${data.clichesFound} clichés detected.</p>
-        <ul style="list-style: none; padding: 0; margin: 1rem 0; max-height: 200px; overflow-y: auto;">
-          ${data.clicheList.slice(0, 5).map(c => `
-            <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: #fff5f5; border-radius: 4px; border-left: 3px solid #e11d48;">
-              <div style="font-weight: bold; font-size: 0.8rem; color: #e11d48;">"${c.phrase}"</div>
-              <div style="font-size: 0.7rem; color: #666; margin-top: 0.2rem;">Try: ${c.alternatives.join(', ')}</div>
-            </li>
-          `).join('')}
-        </ul>
-        ${data.clicheList.length > 5 ? `<p style="font-size: 0.7rem; color: #999;">And ${data.clicheList.length - 5} more...</p>` : ''}
-        <a href="http://localhost:3000/analyze" target="_blank" style="display: block; text-align: center; font-size: 0.8rem; color: #e11d48; text-decoration: none; margin-top: 1rem;">Open Full Editor</a>
-      </div>
-    `;
+    resultsDiv.classList.remove('hidden');
+    healthScore.innerText = data.healthScore;
+    
+    // Set score color
+    healthScore.className = 'score';
+    if (data.healthScore > 75) healthScore.classList.add('good');
+    else if (data.healthScore > 40) healthScore.classList.add('mid');
+    else healthScore.classList.add('bad');
+
+    statsDiv.innerText = `${data.clichesFound} clichés detected`;
+
+    clicheList.innerHTML = data.clicheList.map(c => `
+      <li class="cliche-item">
+        <div class="cliche-phrase">"${c.phrase}"</div>
+        <div class="cliche-suggestion">Try: ${c.alternatives.slice(0, 2).join(', ')}</div>
+      </li>
+    `).join('');
   }
 });

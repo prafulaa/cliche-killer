@@ -1,16 +1,12 @@
 import { Response } from 'express';
-import { detectClichesFast, calculateHealthScore } from '../services/clicheDetector.js';
+import { detectClichesFast, calculateHealthScore, mergeResults } from '../services/clicheDetector.js';
+import { detectClichesNuanced } from '../services/anthropicClient.js';
 import { AuthenticatedRequest } from '../middleware/auth.js';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../db/client.js';
 import pino from 'pino';
 import dotenv from 'dotenv';
 
-dotenv.config();
 const logger = pino();
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
 
 export default async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -53,14 +49,31 @@ export default async (req: AuthenticatedRequest, res: Response) => {
       processedText = words.slice(0, 10000).join(' ');
     }
 
-    const cliches = detectClichesFast(processedText);
-    const healthScore = calculateHealthScore(processedText, cliches);
+    const clichesFast = detectClichesFast(processedText);
+    
+    let finalCliches = clichesFast;
+    
+    // Tier 2: Nuanced Detection (Pro only, < 2000 chars)
+    if (user && processedText.length < 2000) {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('subscription_tier')
+        .eq('id', user.userId)
+        .single();
+      
+      if (userData?.subscription_tier === 'pro') {
+        const nuanced = await detectClichesNuanced(processedText);
+        finalCliches = mergeResults(clichesFast, nuanced, processedText);
+      }
+    }
+
+    const healthScore = calculateHealthScore(processedText, finalCliches);
 
     const analysis = {
       inputText: text,
-      clichesFound: cliches.reduce((sum, c) => sum + (c.count || 0), 0),
+      clichesFound: finalCliches.reduce((sum, c) => sum + (c.count || 0), 0),
       healthScore,
-      clicheList: cliches,
+      clicheList: finalCliches,
       status: 'analyzed',
       createdAt: new Date().toISOString()
     };

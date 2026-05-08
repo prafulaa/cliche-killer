@@ -1,0 +1,169 @@
+:root {
+  --primary: #e11d48;
+  --primary-hover: #be123c;
+  --bg: #09090b;
+  --card: #18181b;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --border: #27272a;
+}
+
+body {
+  width: 320px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.ghost-icon {
+  color: var(--primary);
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border);
+}
+
+.card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.status {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.score {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.score.good { color: #4ade80; }
+.score.mid { color: #facc15; }
+.score.bad { color: #f87171; }
+
+.cliche-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.cliche-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--primary);
+}
+
+.cliche-phrase {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.cliche-suggestion {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.settings-link {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-top: 16px;
+}
+
+.settings-link:hover {
+  color: var(--text);
+}
+
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.hidden { display: none; }
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

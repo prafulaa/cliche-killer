@@ -179,6 +179,96 @@
       "matchType": "phrase",
       "alternatives": ["reliable tool", "strong system"],
       "explanation": "AI favors 'robust'."
+    },
+    {
+      "id": "c021",
+      "phrase": "foster",
+      "category": "business",
+      "severity": 6,
+      "matchType": "word",
+      "alternatives": ["build", "create", "encourage"],
+      "explanation": "Overused in AI business speak."
+    },
+    {
+      "id": "c022",
+      "phrase": "thought leader",
+      "category": "business",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["expert", "authority", "specialist"],
+      "explanation": "Pretentious marketing jargon."
+    },
+    {
+      "id": "c023",
+      "phrase": "pivot",
+      "category": "tech",
+      "severity": 7,
+      "matchType": "word",
+      "alternatives": ["change direction", "shift", "adjust"],
+      "explanation": "Startup buzzword."
+    },
+    {
+      "id": "c024",
+      "phrase": "scalability",
+      "category": "tech",
+      "severity": 6,
+      "matchType": "word",
+      "alternatives": ["growth potential", "expansion"],
+      "explanation": "Overused tech term."
+    },
+    {
+      "id": "c025",
+      "phrase": "disruptive",
+      "category": "tech",
+      "severity": 9,
+      "matchType": "word",
+      "alternatives": ["new", "innovative", "radical"],
+      "explanation": "Peak tech cliché."
+    },
+    {
+      "id": "c026",
+      "phrase": "empower",
+      "category": "marketing",
+      "severity": 7,
+      "matchType": "word",
+      "alternatives": ["help", "enable", "allow"],
+      "explanation": "Vague marketing fluff."
+    },
+    {
+      "id": "c027",
+      "phrase": "streamline",
+      "category": "business",
+      "severity": 7,
+      "matchType": "word",
+      "alternatives": ["simplify", "organize", "speed up"],
+      "explanation": "Corporate jargon for 'make better'."
+    },
+    {
+      "id": "c028",
+      "phrase": "core competencies",
+      "category": "business",
+      "severity": 8,
+      "matchType": "phrase",
+      "alternatives": ["strengths", "skills", "focus"],
+      "explanation": "Meaningless business speak."
+    },
+    {
+      "id": "c029",
+      "phrase": "value-added",
+      "category": "marketing",
+      "severity": 8,
+      "matchType": "word",
+      "alternatives": ["extra", "useful", "beneficial"],
+      "explanation": "Marketing filler."
+    },
+    {
+      "id": "c030",
+      "phrase": "best-in-class",
+      "category": "marketing",
+      "severity": 9,
+      "matchType": "phrase",
+      "alternatives": ["best", "top-tier", "leading"],
+      "explanation": "Overused superlatives."
     }
   ]
 }

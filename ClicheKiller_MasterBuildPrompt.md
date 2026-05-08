@@ -18,6 +18,7 @@ A writer pastes their draft into a minimalist web interface. In 2 seconds, they 
 ## 2. PRIMARY USER FLOWS
 
 ### Flow A — Writer Checks a Draft (the 95% path)
+
 1. Writer goes to `killcliches.com` (or your domain)
 2. Pastes their draft (1,000–10,000 words) into a large text area
 3. Clicks **"Scan for Clichés"**
@@ -32,6 +33,7 @@ A writer pastes their draft into a minimalist web interface. In 2 seconds, they 
 9. Writer can export cleaned text or copy to clipboard
 
 ### Flow B — Browser Extension Usage (secondary, desktop only)
+
 1. Writer installs **Cliché Killer extension** from Chrome Web Store
 2. Opens any text box in Gmail, LinkedIn, Medium, Notion, WordPress, Substack, etc.
 3. Small icon appears in top-right of text area
@@ -40,12 +42,14 @@ A writer pastes their draft into a minimalist web interface. In 2 seconds, they 
 6. Writer saves their draft with clichés removed
 
 ### Flow C — API Usage (power users only)
+
 1. Developer integrates `POST /api/analyze` into their own platform
 2. Sends text + API key
 3. Gets back JSON with flagged phrases, positions, severity scores, suggestions
 4. Renders UI however they want in their app
 
 ### Flow D — Account & Subscription
+
 1. First 5 analyses free
 2. After 5: prompted to sign up (email only, no password)
 3. Free tier: 50 analyses/month
@@ -58,7 +62,7 @@ A writer pastes their draft into a minimalist web interface. In 2 seconds, they 
 ## 3. TECH STACK (LOCKED — DO NOT SUBSTITUTE)
 
 | Layer | Choice | Reason |
-|-------|--------|--------|
+| :--- | :--- | :--- |
 | Backend | Node.js 20 + Express | Simple, fast, easy to deploy |
 | NLP/Detection | Pattern matching (JSON db) + Anthropic API | Hybrid: fast regex for 80% of cases, Claude API for nuanced detection |
 | Database | Supabase (Postgres) + JSON for phrase db | Free tier sufficient, JSON storage for cliché patterns |
@@ -231,11 +235,13 @@ The core asset. A JSON file with 500+ known AI clichés, grouped by category, wi
 ```
 
 ### Matching strategy
+
 - **Exact:** `"in today's landscape"` → only match if exact case-insensitive substring
 - **Word:** `"cutting-edge"` → match word boundaries (hyphenated counts as one word)
 - **Phrase:** `"it's crucial to"` → match substring with word boundaries
 
 ### Size target
+
 Aim for 500–800 clichés covering:
 - Business jargon (30%)
 - Tech/startup (25%)
@@ -321,6 +327,7 @@ CREATE POLICY "api_keys_owned" ON api_keys
 ### Two-tier detection strategy
 
 **Tier 1: Fast pattern matching (handles 80% of cases)**
+
 ```typescript
 // Load cliches.json at startup
 const phraseDb = loadClichesFromJson();
@@ -357,6 +364,7 @@ function detectClichesFast(text: string): Cliche[] {
 ```
 
 **Tier 2: Claude API for nuanced edge cases**
+
 ```typescript
 async function detectClicherNuanced(text: string, fastResults: Cliche[]): Promise<Cliche[]> {
   // Only use API if:
@@ -394,6 +402,7 @@ Focus on: corporate jargon, meaningless buzzwords, overused metaphors, corporate
 ```
 
 ### Health Score Calculation
+
 ```typescript
 function calculateHealthScore(text: string, cliches: Cliche[]): number {
   const wordCount = text.split(/\s+/).length;
@@ -411,11 +420,13 @@ function calculateHealthScore(text: string, cliches: Cliche[]): number {
 ## 8. API ENDPOINTS
 
 ### Public (no auth)
+
 - `POST /api/analyze` — analyze text (requires quota check, rate limit by IP)
 - `POST /api/auth/request-magic-link` — send magic link to email
 - `GET /api/auth/verify?token=...` — verify token, set JWT
 
 ### Authenticated (JWT required)
+
 - `GET /api/user/me` — current user profile + usage
 - `POST /api/analyze-save` — save an analysis to history
 - `GET /api/analyses` — list past analyses (paginated)
@@ -428,6 +439,7 @@ function calculateHealthScore(text: string, cliches: Cliche[]): number {
 - `GET /api/billing/portal` — manage subscription
 
 ### Webhook (Stripe)
+
 - `POST /api/stripe/webhook` — subscription events
 
 ---
@@ -490,6 +502,7 @@ export function TextEditor() {
 ```
 
 ### Highlighting Strategy
+
 Instead of a fancy editor, use simple inline `<mark>` tags with CSS:
 
 ```html
@@ -644,12 +657,16 @@ Go through your own writing, ChatGPT outputs, blog posts known to be AI-generate
 After launch, users submit phrases that feel clichéd to them. Track in `/suggestions` endpoint, manually review + merge.
 
 **Source 3: Research**
+
+```markdown
 - Articles about "AI-written phrases" (there are many Medium posts on this)
 - r/SubredditDrama threads mocking AI language
 - HN comments about ChatGPT patterns
 - Corpus analysis of known-AI content vs. human content
+```
 
 **Structure each entry:**
+
 ```json
 {
   "id": "c123",
@@ -670,7 +687,7 @@ Start with 200 phrases for launch. Add 50 every month.
 ## 13. EDGE CASES & ERROR HANDLING
 
 | Scenario | Behavior |
-|----------|----------|
+| :--- | :--- |
 | User submits 50,000-word novel | Truncate to 10,000, analyze, warn user |
 | User is over quota | Reply with upgrade prompt + limited results |
 | Cliché phrase appears 50 times in text | Count it once, show count in sidebar |
@@ -700,6 +717,7 @@ Start with 200 phrases for launch. Add 50 every month.
 ## 15. TESTING REQUIREMENTS
 
 ### Unit tests (Vitest)
+
 - `clicheDetector.ts` — 50+ test cases:
   - Exact match: "in today's landscape" in various casings
   - Word match: "cutting-edge" with hyphens
@@ -711,17 +729,20 @@ Start with 200 phrases for launch. Add 50 every month.
 - `phraseDb.ts` — can load JSON without corruption, duplicate detection
 
 ### Integration tests (API)
+
 - `POST /api/analyze` with various texts
 - Magic link flow: request → email send → verify → JWT
 - Rate limiting: 31st request returns 429
 - Quota enforcement: free tier hits limit, paid tier doesn't
 
 ### E2E tests (Playwright)
+
 - Sign up → analyze → upgrade → use Pro feature
 - Extension installed, inject into Gmail, analyze, suggest
 - Save analysis to history, retrieve from dashboard
 
 ### Manual QA
+
 - [ ] Paste 10 real texts (blog posts, emails, essays), verify clichés detected
 - [ ] Fix a phrase manually, re-analyze, verify it's gone
 - [ ] Extension works in 3+ browsers
@@ -732,6 +753,7 @@ Start with 200 phrases for launch. Add 50 every month.
 ## 16. GO-TO-MARKET PLAYBOOK
 
 ### Target personas
+
 - **Freelance copywriters** (50%)
 - **Content creators** (20%)
 - **Academics** (15%)
@@ -739,6 +761,7 @@ Start with 200 phrases for launch. Add 50 every month.
 - **Newsletter writers** (5%)
 
 ### Distribution channels (order of priority)
+
 1. **Reddit:** r/copywriting, r/writing, r/content_creators, r/marketing — comment helpfully on threads about AI writing.
 2. **Twitter/X:** Share before-after examples. Tag #WritingCommunity #ContentCreators.
 3. **Indie Hackers:** Post launch story + metrics.
@@ -747,10 +770,12 @@ Start with 200 phrases for launch. Add 50 every month.
 6. **YouTube:** "ChatGPT wrote my blog post, here's what I fixed" video (3–5 min).
 
 ### First 50 customers
+
 - Free Pro tier for 3 months in exchange for Twitter testimonial
 - Collect 5 video testimonials for landing page
 
 ### Pricing experiments
+
 - Start at $9/month (undercut competitors)
 - After 100 customers, test $12/month
 - Annual discount: $100/year (vs $108/year monthly)
@@ -760,21 +785,25 @@ Start with 200 phrases for launch. Add 50 every month.
 ## 17. ANALYTICS / METRICS TO TRACK
 
 ### North-star metric
+
 - **Monthly active users (MAU) with 5+ analyses per month**
 
 ### Funnel
+
 - Visits → sign up
 - Sign up → first analysis
 - First analysis → upgrade to Pro
 - Pro → monthly retention
 
 ### Product health
+
 - Detection accuracy (% clichés caught on known test set)
 - False positive rate (% of highlighted phrases user rejects)
 - API latency (P95 < 500ms)
 - Extension crash rate
 
 ### Business
+
 - Monthly Recurring Revenue (MRR)
 - Customer acquisition cost (CAC)
 - Lifetime value (LTV)
@@ -803,7 +832,7 @@ Remove AI-generated phrases from your writing. Get a human voice back.
 
 ## Setup
 
-\`\`\`bash
+```bash
 git clone ...
 cd cliche-killer
 pnpm install

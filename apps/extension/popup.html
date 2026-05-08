@@ -1,16 +1,69 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Cliché Killer</title>
-    <style>
-      body { width: 300px; padding: 1rem; font-family: sans-serif; }
-      h1 { font-size: 1.2rem; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>Cliché Killer</h1>
-    <p>Scan your text for AI clichés.</p>
-    <button id="scan">Scan Page</button>
+    <div id="main-view">
+      <div class="header">
+        <div class="logo">
+          <span class="ghost-icon">👻</span>
+          <span>Cliché Killer</span>
+        </div>
+        <button id="settings-btn" class="btn-secondary" style="padding: 4px 8px; font-size: 10px;">API Key</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+        Clean up your writing in one click.
+      </p>
+
+      <button id="scan" class="btn btn-primary">
+        <span id="scan-text">Scan current text</span>
+        <div id="loader" class="loader hidden"></div>
+      </button>
+
+      <div id="results" class="card hidden">
+        <div class="score-container">
+          <span style="font-size: 12px; color: var(--text-muted);">Health Score</span>
+          <span id="health-score" class="score">0</span>
+        </div>
+        
+        <div id="stats" style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
+          0 clichés detected
+        </div>
+
+        <ul id="cliche-list" class="cliche-list">
+          <!-- Clichés will be injected here -->
+        </ul>
+
+        <a href="http://localhost:3000/analyze" target="_blank" class="settings-link">
+          Open Full Editor
+        </a>
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+
+    <div id="settings-view" class="hidden">
+      <div class="header">
+        <div class="logo">Settings</div>
+        <button id="back-btn" class="btn-secondary" style="padding: 4px 8px; font-size: 10px;">Back</button>
+      </div>
+      
+      <div class="card">
+        <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+          API Key
+        </label>
+        <input type="password" id="api-key-input" class="input" placeholder="Enter your 32-char key">
+        <button id="save-key" class="btn btn-primary" style="font-size: 12px;">Save Key</button>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 10px;">
+          Find your key in the Cliché Killer dashboard.
+        </p>
+      </div>
+    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>

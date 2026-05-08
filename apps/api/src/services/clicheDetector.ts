@@ -43,6 +43,37 @@ export function detectClichesFast(text: string): Cliche[] {
   return results.sort((a, b) => b.severity - (a.severity || 0));
 }
 
+export function mergeResults(fastResults: Cliche[], nuancedResults: { phrase: string, reason: string }[], text: string): Cliche[] {
+  const merged = [...fastResults];
+  
+  for (const nuanced of nuancedResults) {
+    // Check if phrase is already in fast results
+    const exists = merged.some(f => f.phrase.toLowerCase() === nuanced.phrase.toLowerCase());
+    
+    if (!exists) {
+      // Find positions for the nuanced result
+      const regex = new RegExp(`\\b${nuanced.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      const positions = findPositions(text, regex);
+      
+      if (positions.length > 0) {
+        merged.push({
+          id: `ai-${Math.random().toString(36).substr(2, 9)}`,
+          phrase: nuanced.phrase,
+          category: 'other',
+          severity: 7, // High default for AI-detected nuances
+          matchType: 'phrase',
+          alternatives: ["rewrite this manually", "use more direct language"],
+          explanation: nuanced.reason,
+          count: positions.length,
+          positions: positions
+        });
+      }
+    }
+  }
+  
+  return merged.sort((a, b) => b.severity - (a.severity || 0));
+}
+
 function findPositions(text: string, regex: RegExp): number[] {
   const positions: number[] = [];
   let match;

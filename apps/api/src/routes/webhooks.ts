@@ -1,16 +1,12 @@
 import express, { Router } from 'express';
-import stripe from '../services/stripeService.js';
-import { createClient } from '@supabase/supabase-js';
+import { constructWebhookEvent } from '../services/stripeService.js';
 import dotenv from 'dotenv';
 import pino from 'pino';
 
 dotenv.config();
 const logger = pino();
 const router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
+import { supabase } from '../db/client.js';
 
 // Stripe requires the raw body for signature verification
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -21,7 +17,7 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
   try {
     if (!sig || !webhookSecret) throw new Error('Missing signature or webhook secret');
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    event = constructWebhookEvent(req.body, sig, webhookSecret);
   } catch (err) {
     logger.error(`Webhook signature verification failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);

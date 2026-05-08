@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import pino from 'pino';
 import healthRouter from './routes/health.js';
@@ -17,6 +18,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(cors());
+app.use(helmet());
 
 // Webhooks must be before express.json() to handle raw body
 app.use('/api/webhooks', webhooksRouter);

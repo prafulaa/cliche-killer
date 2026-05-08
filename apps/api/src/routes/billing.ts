@@ -1,17 +1,13 @@
 import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth.js';
 import { createCheckoutSession, createPortalSession } from '../services/stripeService.js';
-import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import pino from 'pino';
 
 dotenv.config();
 const logger = pino();
 const router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-);
+import { supabase } from '../db/client.js';
 
 router.post('/checkout', authenticate, async (req: AuthenticatedRequest, res) => {
   if (!req.user) return res.status(401).json({ error: 'Authentication required' });

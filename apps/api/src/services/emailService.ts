@@ -5,13 +5,24 @@ import pino from 'pino';
 dotenv.config();
 const logger = pino();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to allow server to start without API key
+let resend: Resend | null = null;
+
+function getResendClient(): Resend {
+  if (!resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY environment variable is not set');
+    }
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 export async function sendMagicLink(email: string, token: string) {
   const loginUrl = `${process.env.APP_URL}/api/auth/verify?token=${token}`;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResendClient().emails.send({
       from: 'Cliché Killer <onboarding@resend.dev>', // Use verified domain in production
       to: [email],
       subject: 'Your Magic Link for Cliché Killer',

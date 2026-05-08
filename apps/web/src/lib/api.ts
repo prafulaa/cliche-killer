@@ -25,3 +25,21 @@ export async function analyzeText(text: string): Promise<Analysis> {
 
   return response.json();
 }
+
+export async function getUser() {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+  if (!token) return null;
+
+  const response = await fetch(`${API_URL}/api/auth/me`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    localStorage.removeItem('auth_token');
+    return null;
+  }
+
+  return response.json();
+}
