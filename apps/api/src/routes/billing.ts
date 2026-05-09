@@ -7,7 +7,7 @@ import pino from 'pino';
 dotenv.config();
 const logger = pino();
 const router = Router();
-import { supabase } from '../db/client.js';
+import { supabase } from '../database/client.js';
 
 router.post('/checkout', authenticate, async (req: AuthenticatedRequest, res) => {
   if (!req.user) return res.status(401).json({ error: 'Authentication required' });

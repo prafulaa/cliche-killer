@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { supabase } from '../db/client.js';
+import { supabase } from '../database/client.js';
 
 dotenv.config();
 

@@ -59,12 +59,10 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Timeout error handler
-app.use((err: any, req: any, res: any, next: any) => {
-  if (err.timeout) {
-    return res.status(503).json({ error: 'Request timeout' });
-  }
-  next(err);
+// Generic error handler (must be after all routes)
+app.use((err: any, _req: any, res: any, _next: any) => {
+  logger.error(err, 'Unhandled error');
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 export default app;

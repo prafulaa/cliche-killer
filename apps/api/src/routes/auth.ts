@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
-import { supabase } from '../db/client.js';
+import { supabase } from '../database/client.js';
 import { sendMagicLink } from '../services/emailService.js';
 import dotenv from 'dotenv';
 import pino from 'pino';

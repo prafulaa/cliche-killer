@@ -6,7 +6,7 @@ import pino from 'pino';
 dotenv.config();
 const logger = pino();
 const router = Router();
-import { supabase } from '../db/client.js';
+import { supabase } from '../database/client.js';
 
 // Stripe requires the raw body for signature verification
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {

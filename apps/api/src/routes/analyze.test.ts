@@ -4,7 +4,7 @@ import request from 'supertest';
 import analyzeRouter from './analyze.js';
 import { vi } from 'vitest';
 
-vi.mock('../db/client.js', () => ({
+vi.mock('../database/client.js', () => ({
   supabase: {
     from: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),

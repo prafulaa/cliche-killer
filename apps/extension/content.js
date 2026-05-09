@@ -1,7 +1,5 @@
 // Cliché Killer Content Script
 
-console.log('Cliché Killer: Content script loaded');
-
 // Function to find active text areas
 function injectIconIntoEditors() {
   const editors = document.querySelectorAll('textarea, [contenteditable="true"]');
@@ -65,7 +63,6 @@ function showFloatingButton(editor) {
         if (response.error) {
           console.error('Cliché Killer Error:', response.error);
         } else {
-          console.log('Cliché Killer Analysis:', response);
           // For now, we rely on the user opening the popup to see results
           // but we could show a small toast here
           showToast(`${response.clichesFound} clichés found! Open extension to fix.`);
